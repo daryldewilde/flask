@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body">
+                {% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-75">
+    <div class="col-md-8">
+        {% if current_user.is_authenticated %}
+        <div class="card">
+            <div class="card-body text-center p-5">
+                <div class="position-relative mb-4">
+                    <img src="{{ current_user.profile_pic }}" alt="Profile Picture" 
+                         class="rounded-circle" 
+                         style="width: 150px; height: 150px; border: 4px solid var(--primary-color); box-shadow: 0 4px 8px rgba(0,0,0,.1);">
+                    <span class="position-absolute bottom-0 end-0 bg-success rounded-circle p-2"
+                          style="width: 32px; height: 32px; border: 3px solid white;">
+                        <i class="fas fa-check text-white"></i>
+                    </span>
+                </div>
+                <h2 class="card-title mb-3">Bon retour, {{ current_user.name }}! 👋</h2>
+                <p class="card-text text-muted mb-4">
+                    <i class="fas fa-envelope me-2"></i>{{ current_user.email }}
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('profile') }}" class="btn btn-primary">
+                        <i class="fas fa-user me-2"></i>Voir le Profil
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center p-5">
+                <div class="mb-4">
+                    <i class="fas fa-shield-alt fa-4x text-primary"></i>
+                </div>
+                <h1 class="card-title mb-3">Bienvenue sur l'Application Sécurisée</h1>
+                <p class="card-text text-muted mb-4">
+                    Profitez d'une authentification sécurisée avec Google OAuth2.0
+                </p>
+                <div class="d-grid gap-3 col-lg-6 mx-auto">
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                        <i class="fab fa-google me-2"></i>Continuer avec Google
+                    </a>
+                    <p class="text-muted small">
+                        <i class="fas fa-lock me-2"></i>Sécurisé par chiffrement SSL/TLS
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if current_user.is_authenticated %}
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-shield-alt fa-2x text-primary mb-3"></i>
+                <h5 class="card-title">Authentification Sécurisée</h5>
+                <p class="card-text text-muted">Votre compte est protégé par OAuth2.0 de Google</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-lock fa-2x text-primary mb-3"></i>
+                <h5 class="card-title">Protection des Données</h5>
+                <p class="card-text text-muted">Toutes vos données sont chiffrées et stockées en toute sécurité</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-user-shield fa-2x text-primary mb-3"></i>
+                <h5 class="card-title">Confidentialité Prioritaire</h5>
+                <p class="card-text text-muted">Votre confidentialité est notre priorité absolue</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

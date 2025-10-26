@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <img src="{{ user.profile_pic }}" alt="Photo de Profil" class="rounded-circle mb-3" style="width: 200px; height: 200px;">
+                    <h2 class="card-title">{{ user.name }}</h2>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <h6 class="mb-1">ID du Compte</h6>
+                                <p class="mb-0 text-muted">{{ user.id }}</p>
+                            </div>
+                            <div class="list-group-item">
+                                <h6 class="mb-1">Méthode d'Authentification</h6>
+                                <p class="mb-0 text-muted">Google OAuth2.0</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <a href="{{ url_for('index') }}" class="btn btn-primary">Retour à l'Accueil</a>
+                            <a href="{{ url_for('logout') }}" class="btn btn-danger ms-2">Déconnexion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
