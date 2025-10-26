@@ -96,14 +96,80 @@ Application Flask sécurisée permettant l'authentification via Google OAuth2. I
 - Sessions sécurisées avec Flask-Login
 - Certificats SSL pour HTTPS
 
+## Architecture d'Authentification
+
+### OAuth 2.0 avec Google
+L'application utilise le protocole OAuth 2.0 pour l'authentification via Google, suivant le flux "Authorization Code" :
+
+1. Flux d'Authentification
+   ```
+   [Application] -> [Google Authorization Endpoint]
+   -> [Utilisateur s'authentifie]
+   -> [Callback avec code]
+   -> [Échange code contre tokens]
+   -> [Récupération informations utilisateur]
+   ```
+
+2. Points de Terminaison Utilisés
+   - Authorization Endpoint : `https://accounts.google.com/o/oauth2/v2/auth`
+   - Token Endpoint : `https://oauth2.googleapis.com/token`
+   - Userinfo Endpoint : `https://openidconnect.googleapis.com/v1/userinfo`
+
+### OpenID Connect
+OpenID Connect est utilisé en complément d'OAuth 2.0 pour :
+- Obtenir les informations d'identité vérifiées (email, nom, photo)
+- Recevoir un ID Token (JWT) de Google
+- Vérifier l'authenticité des informations utilisateur
+
+### JSON Web Tokens (JWT)
+Les JWT sont utilisés dans l'ID Token de Google pour :
+1. Vérification de l'Identité
+   - `iss` : Confirme que le token vient de Google
+   - `aud` : Vérifie que le token est destiné à notre application
+   - `exp` : Contrôle la validité temporelle du token
+   - `sub` : Identifiant unique de l'utilisateur
+
+2. Informations Utilisateur
+   ```json
+   {
+     "iss": "https://accounts.google.com",
+     "sub": "user-unique-id",
+     "aud": "your-client-id",
+     "email": "user@example.com",
+     "email_verified": true,
+     "name": "User Name",
+     "picture": "profile-picture-url",
+     "iat": timestamp,
+     "exp": timestamp
+   }
+   ```
+
+### Cycle de Vie de l'Authentification
+1. **Connexion Initiale**
+   - Redirection vers Google avec `scope=["openid", "email", "profile"]`
+   - Réception du code d'autorisation
+   - Échange contre Access Token et ID Token
+   - Vérification du JWT et extraction des informations
+
+2. **Session Utilisateur**
+   - Création d'une session Flask sécurisée
+   - Stockage des informations utilisateur en base SQLite
+   - Gestion de la session via Flask-Login
+
+3. **Déconnexion**
+   - Nettoyage de la session Flask
+   - Révocation des tokens OAuth
+   - Redirection vers la page de connexion
+
 ## Sécurité
 
 - Protocole HTTPS avec certificats SSL
 - Protection contre les attaques CSRF
-- Vérification des tokens OAuth2
+- Vérification des tokens OAuth2 et JWT
 - Sessions utilisateur sécurisées
 - Stockage sécurisé des données utilisateur
 - Déconnexion sécurisée avec nettoyage de session
+- Vérification de l'email et de l'intégrité des tokens
 
 ## Note sur les Certificats SSL
 
